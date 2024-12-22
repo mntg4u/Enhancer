@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Enhancer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f9;
+    }
+    h1 {
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    input[type="file"] {
+      margin: 20px 0;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    .loading {
+      font-size: 16px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI Photo Enhancer</h1>
+    <p>Upload a photo to enhance its quality using AI!</p>
+    <input type="file" id="photoInput" accept="image/*">
+    <button id="uploadBtn">Enhance Photo</button>
+    <p class="loading" id="loading" style="display: none;">Enhancing photo, please wait...</p>
+    <div id="result" style="margin-top: 20px;"></div>
+  </div>
+
+  <script>
+    const uploadBtn = document.getElementById('uploadBtn');
+    const photoInput = document.getElementById('photoInput');
+    const loading = document.getElementById('loading');
+    const result = document.getElementById('result');
+
+    uploadBtn.addEventListener('click', async () => {
+      const file = photoInput.files[0];
+      if (!file) {
+        alert('Please select a photo first!');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('photo', file);
+
+      loading.style.display = 'block';
+      result.innerHTML = '';
+
+      try {
+        const response = await fetch('/enhance-photo', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to enhance photo');
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        loading.style.display = 'none';
+        result.innerHTML = `<img src="${url}" alt="Enhanced Photo">`;
+      } catch (error) {
+        loading.style.display = 'none';
+        result.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
