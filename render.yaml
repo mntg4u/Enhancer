@@ -1,8 +1,0 @@
-services:
-  - name: photo-enhancer-backend
-    type: web
-    env: python
-    region: oregon # Choose your region
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
-    autoDeploy: true
